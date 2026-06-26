@@ -1,4 +1,4 @@
-const CACHE_NAME = 'passvault-cache-v2';
+const CACHE_NAME = 'passvault-cache-v3';
 const ASSETS = [
   'index.html',
   'style.css',
@@ -9,8 +9,14 @@ const ASSETS = [
 
 self.addEventListener('install', (e) => {
   e.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
-    .then(() => self.skipWaiting())
+    caches.open(CACHE_NAME).then(cache => {
+      // Using7 map to safely add assets individually so one failure won't crash the install
+      return Promise.all(
+        ASSETS.map(asset => {
+          return cache.add(asset).catch(err => console.log(`Failed to cache asset: ${asset}`, err));
+        })
+      );
+    }).then(() => self.skipWaiting())
   );
 });
 
@@ -23,7 +29,15 @@ self.addEventListener('activate', (e) => {
 });
 
 self.addEventListener('fetch', (e) => {
-  e.respondWith(
-    caches.match(e.request).then(cachedResponse => cachedResponse || fetch(e.request))
-  );
+  // Only intercept HTTP/HTTPS requests to avoid crashing on local extensions
+  if (e.request.url.startsWith('http')) {
+    e.respondWith(
+      caches.match(e.request).then(cachedResponse => {
+        return cachedResponse || fetch(e.request).catch(() => {
+          // Fallback gracefully if network fails completely
+          return new Response("Offline network content error.");
+        });
+      })
+    );
+  }
 });
