@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pass-Vault</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#10B981">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <main class="app-container">
+        <!-- Header & Sync Actions -->
+        <header class="app-header">
+            <h1>🔐 Pass-Vault</h1>
+            <div class="sync-actions">
+                <button id="btn-export-zip" class="btn-icon" title="Export as ZIP File">📦 Export ZIP</button>
+            </div>
+        </header>
+        
+        <!-- Category Filter Tabs -->
+        <nav class="category-tabs">
+            <button class="tab-btn active" data-tab="all">All</button>
+            <button class="tab-btn" data-tab="device">Devices</button>
+            <button class="tab-btn" data-tab="account">Accounts</button>
+            <button class="tab-btn" data-tab="game">Games</button>
+            <button class="tab-btn" data-tab="crypto">Crypto/Wallets</button>
+        </nav>
+
+        <!-- Dynamic Vault Items Content -->
+        <section class="app-content">
+            <div id="vault-list" class="vault-list">
+                <!-- Javascript will inject items here -->
+            </div>
+        </section>
+
+        <!-- Floating Action Button to Add New Item -->
+        <button id="btn-add-modal" class="fab-btn">+</button>
+    </main>
+
+    <!-- Entry Add/Edit Modal Layer -->
+    <div id="entry-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2 id="modal-title">New Entry</h2>
+            <form id="vault-form">
+                <input type="hidden" id="entry-id">
+                
+                <label for="entry-category">Category</label>
+                <select id="entry-category" required>
+                    <option value="device">Device (Phone/Tablet/PC)</option>
+                    <option value="account">Social/Chat Account</option>
+                    <option value="game">Game Account</option>
+                    <option value="crypto">Crypto Wallet / Exchange</option>
+                </select>
+
+                <label for="entry-title">Title / Model / Platform</label>
+                <input type="text" id="entry-title" placeholder="e.g., Pixel 7 Pro, Google Account, LoL" required>
+
+                <label for="entry-identity">Username / Identifier</label>
+                <input type="text" id="entry-identity" placeholder="e.g., email@gmail.com, Lockscreen, Tag">
+
+                <label for="entry-secret">Password / PIN / Pattern description</label>
+                <input type="text" id="entry-secret" placeholder="Enter security key, code or pattern path">
+
+                <label for="entry-backup">2FA One-Time Backup Codes (One per line)</label>
+                <textarea id="entry-backup" rows="4" placeholder="Code 1&#10;Code 2&#10;Code 3"></textarea>
+
+                <div class="modal-actions">
+                    <button type="button" id="btn-modal-close" class="btn-secondary">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Entry</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- PWA Bottom Install Alert Banner -->
+    <div id="install-banner" class="install-banner hidden">
+        <div class="banner-content">
+            <h3>Install Pass-Vault</h3>
+            <p>Access your passcodes fully offline anytime.</p>
+        </div>
+        <button id="btn-install" class="btn-primary">Install</button>
+    </div>
+
+    <!-- External library required to make full client-side ZIP bundles completely offline -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
